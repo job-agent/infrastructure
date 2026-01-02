@@ -4,16 +4,53 @@ receivers:
       grpc:
         endpoint: 0.0.0.0:4317
 
+  filelog/docker:
+    include:
+      - /var/lib/docker/containers/*/*.log
+    start_at: end
+    include_file_path: true
+    operators:
+      # Parse Docker JSON log format
+      - type: json_parser
+        id: docker_parser
+        output: extract_metadata
+        timestamp:
+          parse_from: attributes.time
+          layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+      # Extract container ID from file path
+      - type: regex_parser
+        id: extract_metadata
+        regex: '^/var/lib/docker/containers/(?P<container_id>[^/]+)/.*\.log$'
+        parse_from: attributes["log.file.path"]
+        output: move_body
+      # Move log content to body
+      - type: move
+        id: move_body
+        from: attributes.log
+        to: body
+
 processors:
   batch:
     timeout: 1s
     send_batch_size: 1024
+
+  resource/loki:
+    attributes:
+      - action: insert
+        key: loki.format
+        value: raw
+      - action: insert
+        key: loki.resource.labels
+        value: container_id
 
 exporters:
   otlp/tempo:
     endpoint: tempo:4317
     tls:
       insecure: true
+
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
 
 extensions:
   health_check:
@@ -26,3 +63,7 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlp/tempo]
+    logs:
+      receivers: [filelog/docker]
+      processors: [batch, resource/loki]
+      exporters: [loki]

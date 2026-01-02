@@ -14,3 +14,21 @@ datasources:
     url: http://prometheus:9090
     isDefault: true
     editable: false
+
+  - name: Loki
+    type: loki
+    uid: Loki
+    access: proxy
+    url: http://loki:3100
+    isDefault: false
+    editable: false
+    jsonData:
+      derivedFields:
+        - name: TraceID
+          datasourceUid: Tempo
+          matcherRegex: "trace_id=([\\w-]+)"
+          url: "$${__value.raw}"
+        - name: TraceID_JSON
+          datasourceUid: Tempo
+          matcherRegex: "\"trace_id\":\\s*\"([\\w-]+)\""
+          url: "$${__value.raw}"
