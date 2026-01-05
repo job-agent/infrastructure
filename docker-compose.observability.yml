@@ -186,7 +186,7 @@ services:
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
     container_name: cadvisor
     # SECURITY NOTE: Privileged mode is required for cAdvisor to access host container metrics.
     # This grants full host access - acceptable for local development but review for production.
