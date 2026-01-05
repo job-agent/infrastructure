@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.92.0
+    image: otel/opentelemetry-collector-contrib:0.142.0
     container_name: otel-collector
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     ports:
