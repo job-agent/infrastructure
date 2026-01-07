@@ -59,7 +59,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(container_last_seen{name=~\".+\"})",
+          "expr": "count(container_last_seen{id=~\"/docker/.*\"})",
           "legendFormat": "Running",
           "refId": "A"
         }
@@ -159,8 +159,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"$container\"}[5m])) by (name) * 100",
-          "legendFormat": "{{name}}",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{id=~\"$container\"}[5m])) by (id) * 100",
+          "legendFormat": "__auto",
           "refId": "A"
         }
       ],
@@ -217,7 +217,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(container_memory_usage_bytes{name=~\".+\"})",
+          "expr": "sum(container_memory_usage_bytes{id=~\"/docker/.*\"})",
           "legendFormat": "Total",
           "refId": "A"
         }
@@ -307,8 +307,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "container_memory_usage_bytes{name=~\"$container\"}",
-          "legendFormat": "{{name}}",
+          "expr": "container_memory_usage_bytes{id=~\"$container\"}",
+          "legendFormat": "__auto",
           "refId": "A"
         }
       ],
@@ -397,8 +397,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(container_network_receive_bytes_total{name=~\"$container\"}[5m])",
-          "legendFormat": "{{name}} - RX",
+          "expr": "rate(container_network_receive_bytes_total{id=~\"$container\"}[5m])",
+          "legendFormat": "__auto RX",
           "refId": "A"
         },
         {
@@ -406,8 +406,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(container_network_transmit_bytes_total{name=~\"$container\"}[5m])",
-          "legendFormat": "{{name}} - TX",
+          "expr": "rate(container_network_transmit_bytes_total{id=~\"$container\"}[5m])",
+          "legendFormat": "__auto TX",
           "refId": "B"
         }
       ],
@@ -496,8 +496,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(container_fs_reads_bytes_total{name=~\"$container\"}[5m])",
-          "legendFormat": "{{name}} - Read",
+          "expr": "rate(container_fs_reads_bytes_total{id=~\"$container\"}[5m])",
+          "legendFormat": "__auto Read",
           "refId": "A"
         },
         {
@@ -505,8 +505,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "rate(container_fs_writes_bytes_total{name=~\"$container\"}[5m])",
-          "legendFormat": "{{name}} - Write",
+          "expr": "rate(container_fs_writes_bytes_total{id=~\"$container\"}[5m])",
+          "legendFormat": "__auto Write",
           "refId": "B"
         }
       ],
@@ -595,8 +595,8 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "container_spec_cpu_quota{name=~\"$container\"} / container_spec_cpu_period{name=~\"$container\"}",
-          "legendFormat": "{{name}} - CPU Quota",
+          "expr": "container_spec_cpu_quota{id=~\"$container\"} / container_spec_cpu_period{id=~\"$container\"}",
+          "legendFormat": "__auto",
           "refId": "A"
         }
       ],
@@ -715,10 +715,10 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\".+\"}[5m])) by (name) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{id=~\"/docker/.*\"}[5m])) by (id) * 100",
           "format": "table",
           "instant": true,
-          "legendFormat": "{{name}}",
+          "legendFormat": "__auto",
           "refId": "CPU"
         },
         {
@@ -726,10 +726,10 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "container_memory_usage_bytes{name=~\".+\"}",
+          "expr": "container_memory_usage_bytes{id=~\"/docker/.*\"}",
           "format": "table",
           "instant": true,
-          "legendFormat": "{{name}}",
+          "legendFormat": "__auto",
           "refId": "Memory"
         }
       ],
@@ -738,7 +738,7 @@
         {
           "id": "seriesToColumns",
           "options": {
-            "byField": "name"
+            "byField": "id"
           }
         },
         {
@@ -751,9 +751,6 @@
               "__name__": true,
               "__name__ 1": true,
               "__name__ 2": true,
-              "id": true,
-              "id 1": true,
-              "id 2": true,
               "image": true,
               "image 1": true,
               "image 2": true,
@@ -768,7 +765,7 @@
             "renameByName": {
               "Value #CPU": "CPU %",
               "Value #Memory": "Memory",
-              "name": "Container"
+              "id": "Container"
             }
           }
         }
@@ -810,7 +807,7 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(container_last_seen{name=~\".+\"}, name)",
+        "definition": "label_values(container_last_seen{id=~\"/docker/.*\"}, id)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
@@ -818,7 +815,7 @@
         "name": "container",
         "options": [],
         "query": {
-          "query": "label_values(container_last_seen{name=~\".+\"}, name)",
+          "query": "label_values(container_last_seen{id=~\"/docker/.*\"}, id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
