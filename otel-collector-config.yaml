@@ -34,23 +34,16 @@ processors:
     timeout: 1s
     send_batch_size: 1024
 
-  resource/loki:
-    attributes:
-      - action: insert
-        key: loki.format
-        value: raw
-      - action: insert
-        key: loki.resource.labels
-        value: container_id
-
 exporters:
   otlp/tempo:
     endpoint: tempo:4317
     tls:
       insecure: true
 
-  loki:
-    endpoint: http://loki:3100/loki/api/v1/push
+  otlphttp/loki:
+    endpoint: http://loki:3100/otlp
+    tls:
+      insecure: true
 
 extensions:
   health_check:
@@ -65,5 +58,5 @@ service:
       exporters: [otlp/tempo]
     logs:
       receivers: [filelog/docker]
-      processors: [batch, resource/loki]
-      exporters: [loki]
+      processors: [batch]
+      exporters: [otlphttp/loki]
