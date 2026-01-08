@@ -70,7 +70,7 @@ services:
     restart: unless-stopped
 
   loki:
-    image: grafana/loki:3.3.2
+    image: grafana/loki:3.6.3
     container_name: loki
     # Note: Running as root is required for write access to the loki_data volume
     user: "0:0"
