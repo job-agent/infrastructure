@@ -188,6 +188,12 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.55.1
     container_name: cadvisor
+    command:
+      - --docker_only=true
+      - --docker=unix:///var/run/docker.sock
+      - --containerd=/rootfs/run/containerd/containerd.sock
+      - --containerd-namespace=moby
+      - --store_container_labels=true
     # SECURITY NOTE: Privileged mode is required for cAdvisor to access host container metrics.
     # This grants full host access - acceptable for local development but review for production.
     privileged: true
