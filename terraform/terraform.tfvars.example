@@ -1,0 +1,25 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "dev"
+
+# Database Configuration
+db_instance_class = "db.t3.micro"
+db_name           = "jobs"
+db_username       = "jobagent"
+
+# RabbitMQ Configuration
+mq_instance_type = "mq.t3.micro"
+mq_username      = "jobagent"
+
+# ECS Configuration
+telegram_bot_cpu    = 512
+telegram_bot_memory = 1024
+scrapper_cpu        = 256
+scrapper_memory     = 512
+
+# Secrets (required - do not commit actual values!)
+telegram_bot_token = "YOUR_TELEGRAM_BOT_TOKEN"
+openai_api_key     = ""  # Optional, leave empty if using Bedrock only
+
+# GitHub Configuration
+github_repo = "your-org/job-agent"  # Your GitHub repo for CI/CD
