@@ -93,6 +93,8 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.142.0
     container_name: otel-collector
+    # Run as root to read Docker container logs on Docker Desktop.
+    user: "0:0"
     command: ["--config=/etc/otelcol-contrib/config.yaml"]
     ports:
       - "4317:4317"
@@ -105,7 +107,7 @@ services:
       loki:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:13133/"]
+      test: ["CMD", "/otelcol-contrib", "--version"]
       interval: 10s
       timeout: 5s
       retries: 5

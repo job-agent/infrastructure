@@ -59,7 +59,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "count(count by (container_name) (count_over_time({container_name=~\".+\"}[5m])))",
+          "expr": "count(count by (service_name) (count_over_time({service_name=~\".+\"}[5m])))",
           "legendFormat": "Containers",
           "refId": "A"
         }
@@ -125,7 +125,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum(count_over_time({level=~\"error|ERROR|Error\"}[5m]))",
+          "expr": "sum(count_over_time({service_name=~\".+\"} |~ \"error|ERROR|Error\"[5m]))",
           "legendFormat": "Errors",
           "refId": "A"
         }
@@ -191,7 +191,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum(count_over_time({level=~\"warn|WARN|warning|WARNING|Warning\"}[5m]))",
+          "expr": "sum(count_over_time({service_name=~\".+\"} |~ \"warn|WARN|warning|WARNING|Warning\"[5m]))",
           "legendFormat": "Warnings",
           "refId": "A"
         }
@@ -249,7 +249,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum(bytes_over_time({container_name=~\".+\"}[1h]))",
+          "expr": "sum(bytes_over_time({service_name=~\".+\"}[1h]))",
           "legendFormat": "Volume",
           "refId": "A"
         }
@@ -339,8 +339,8 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum by (container_name) (rate({container_name=~\"$container\"}[$__interval]))",
-          "legendFormat": "{{container_name}}",
+          "expr": "sum by (service_name) (rate({service_name=~\"$container\"}[$__interval]))",
+          "legendFormat": "{{service_name}}",
           "refId": "A"
         }
       ],
@@ -460,12 +460,21 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum by (level) (rate({container_name=~\"$container\", level=~\".+\"}[$__interval]))",
-          "legendFormat": "{{level}}",
+          "expr": "sum(rate({service_name=~\"$container\"} |~ \"error|ERROR|Error\"[$__interval]))",
+          "legendFormat": "error",
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "Loki"
+          },
+          "expr": "sum(rate({service_name=~\"$container\"} |~ \"warn|WARN|warning|WARNING|Warning\"[$__interval]))",
+          "legendFormat": "warn",
+          "refId": "B"
         }
       ],
-      "title": "Log Rate by Level",
+      "title": "Log Rate by Severity (regex)",
       "type": "timeseries"
     },
     {
@@ -520,8 +529,8 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "sum by (container_name) (count_over_time({container_name=~\"$container\"}[1h]))",
-          "legendFormat": "{{container_name}}",
+          "expr": "sum by (service_name) (count_over_time({service_name=~\"$container\"}[1h]))",
+          "legendFormat": "{{service_name}}",
           "refId": "A"
         }
       ],
@@ -557,7 +566,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "{container_name=~\"$container\"} |~ \"$search\"",
+          "expr": "{service_name=~\"$container\"} |~ \"$search\"",
           "legendFormat": "",
           "refId": "A"
         }
@@ -594,7 +603,7 @@
             "type": "loki",
             "uid": "Loki"
           },
-          "expr": "{container_name=~\"$container\", level=~\"error|ERROR|Error\"}",
+          "expr": "{service_name=~\"$container\"} |~ \"error|ERROR|Error\"",
           "legendFormat": "",
           "refId": "A"
         }
@@ -619,14 +628,14 @@
           "type": "loki",
           "uid": "Loki"
         },
-        "definition": "label_values(container_name)",
+        "definition": "label_values(service_name)",
         "hide": 0,
         "includeAll": true,
         "label": "Container",
         "multi": true,
         "name": "container",
         "options": [],
-        "query": "label_values(container_name)",
+        "query": "label_values(service_name)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,

@@ -33,6 +33,11 @@ processors:
   batch:
     timeout: 1s
     send_batch_size: 1024
+  transform/logs:
+    log_statements:
+      - context: log
+        statements:
+          - set(resource.attributes["service.name"], log.attributes["container_id"]) where log.attributes["container_id"] != nil
 
 exporters:
   otlp/tempo:
@@ -58,5 +63,5 @@ service:
       exporters: [otlp/tempo]
     logs:
       receivers: [filelog/docker]
-      processors: [batch]
+      processors: [transform/logs, batch]
       exporters: [otlphttp/loki]
