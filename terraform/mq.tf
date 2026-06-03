@@ -8,11 +8,12 @@ resource "random_password" "mq_password" {
 resource "aws_mq_broker" "rabbitmq" {
   broker_name = "${var.project_name}-rabbitmq"
 
-  engine_type         = "RabbitMQ"
-  engine_version      = "3.13"
-  host_instance_type  = var.mq_instance_type
-  deployment_mode     = "SINGLE_INSTANCE"  # Single-AZ for cost savings
-  publicly_accessible = false
+  engine_type                = "RabbitMQ"
+  engine_version             = "3.13"
+  host_instance_type         = var.mq_instance_type
+  deployment_mode            = "SINGLE_INSTANCE"  # Single-AZ for cost savings
+  publicly_accessible        = false
+  auto_minor_version_upgrade = true
 
   subnet_ids         = [aws_subnet.private[0].id]
   security_groups    = [aws_security_group.mq.id]
