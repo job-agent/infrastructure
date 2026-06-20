@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.142.0
+    image: otel/opentelemetry-collector-contrib:0.143.1
     container_name: otel-collector
     # Run as root to read Docker container logs on Docker Desktop.
     user: "0:0"
